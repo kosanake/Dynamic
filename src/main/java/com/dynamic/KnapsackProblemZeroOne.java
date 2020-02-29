@@ -15,26 +15,19 @@ public class KnapsackProblemZeroOne {
     }
 
     public int calculateValue(int knapsackCapacity) {
-
-        this.mat = new int[weight.length + 1][knapsackCapacity + 1];
-
+        mat = new int[weight.length + 1][knapsackCapacity + 1];
         for (int item = 1; item <= weight.length; item++) {
             for (int capacity = 1; capacity <= knapsackCapacity; capacity++) {
-                int maxValWithoutCurr = mat[item - 1][capacity]; // This is guaranteed to exist
-                int maxValWithCurr = 0; // We initialize this value to 0
-
-                int weightOfCurr = weight[item - 1]; // We use item -1 to account for the extra row at the top
-                if (capacity >= weightOfCurr) { // We check if the knapsack can fit the current item
-                    maxValWithCurr = value[item - 1]; // If so, maxValWithCurr is at least the value of the current item
-
-                    int remainingCapacity = capacity - weightOfCurr; // remainingCapacity must be at least 0
-                    maxValWithCurr += mat[item - 1][remainingCapacity]; // Add the maximum value obtainable with the remaining capacity
+                int currWeight = weight[item - 1];
+                int valueWithCurrent = 0;
+                int valueWithoutCurrent = mat[item - 1][capacity];
+                if (currWeight <= capacity) {
+                    int balanceWeight = capacity - currWeight;
+                    valueWithCurrent = mat[item - 1][balanceWeight] + value[item - 1];
                 }
-
-                mat[item][capacity] = Math.max(maxValWithoutCurr, maxValWithCurr); // Pick the larger of the two
+                mat[item][capacity] = Math.max(valueWithCurrent, valueWithoutCurrent);
             }
         }
-
         return mat[weight.length][knapsackCapacity];
     }
 
